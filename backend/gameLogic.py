@@ -25,9 +25,16 @@ class GameOverseer:
         self.start_round_timer(self.round_time_minutes)
         print("Round {} starting for {} minutes".format(
             self.current_round, self.round_time_minutes))
-        
+
+    def end_round(self):
+        for pair in self.targets.items():
+            if pair[1] in self.alive_players:
+                continue
+            self.alive_players.remove(pair[0])
+        self.setup_round
+
     def start_round_timer(self, minutes):
-        timer = threading.Timer(minutes * 60, self.setup_round)
+        timer = threading.Timer(minutes * 60, self.end_round)
         timer.start()
         return timer
 

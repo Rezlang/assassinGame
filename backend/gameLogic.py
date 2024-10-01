@@ -44,7 +44,7 @@ class GameOverseer:
         with open(self.jsonFile, 'w') as file:
             json.dump(self.data, file, indent=4)
 
-    def assigntargets(self):
+    def assign_targets(self):
         if self.shuffletargets:
             random.shuffle(self.aliveplayers)
         targets = {self.aliveplayers[i]: self.alive_players[(

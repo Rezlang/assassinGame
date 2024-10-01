@@ -43,3 +43,26 @@ class GameOverseer:
         self.data["rounds"][round] = self.targets
         with open(self.jsonFile, 'w') as file:
             json.dump(self.data, file, indent=4)
+
+    def assigntargets(self):
+        if self.shuffletargets:
+            random.shuffle(self.aliveplayers)
+        targets = {self.aliveplayers[i]: self.alive_players[(
+            i + 1) % len(self.alive_players)] for i in range(len(self.alive_players))}
+        self.targets = targets
+        print(targets)
+
+    def kill(self, killer):
+        killed = self.targets[killer]
+        if killed in self.alive_players:
+            self.alive_players.remove(killed)
+            print("{} killed by {}".format(killed, killer))
+
+
+if __name__ == "__main__":
+    Overseer = GameOverseer("test.json")
+
+    kill1 = input("first kill\n").lower()
+    Overseer.kill(kill1)
+    kill2 = input("second kill\n").lower()
+    Overseer.kill(kill2)

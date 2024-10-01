@@ -1,0 +1,12 @@
+{
+    "all_players": [
+
+    ],
+    "game_settings": {
+        "round_time_minutes": 60,
+        "shuffle_targets": false
+    },
+    "rounds": {
+
+    }
+}

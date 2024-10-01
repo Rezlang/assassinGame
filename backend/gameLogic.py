@@ -1,6 +1,8 @@
 import json
 import random
 import threading
+import uuid
+import shutil
 
 
 class GameOverseer:
@@ -13,6 +15,7 @@ class GameOverseer:
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
         self.targets = None
         self.current_round = 0
+        self.game_key = None
         self.setup_round()
 
     def setup_round(self):
@@ -36,16 +39,22 @@ class GameOverseer:
         else:
             for player in to_remove:
                 self.alive_players.remove(player)
-        self.setup_round
+        self.setup_round()
 
     def start_round_timer(self, minutes):
         timer = threading.Timer(minutes * 60, self.end_round)
         timer.start()
         return timer
 
-    def load_json(self, file_path):
-        with open(file_path, 'r') as json_file:
-            data = json.load(json_file)
+    def load_json(self, new_game=False):
+        if new_game:
+            self.game_key = str(uuid.uuid4())
+            new_file_path = f"{self.game_key}.json"
+            shutil.copy("template.json", new_file_path)
+        else:
+            with open(f"{self.game_key}.json", 'r') as json_file:
+                data = json.load(json_file)
+
         return data
 
     def json_round_update(self, round):
@@ -72,9 +81,15 @@ class GameOverseer:
 
 
 if __name__ == "__main__":
-    Overseer = GameOverseer("test.json")
+    Overseer = GameOverseer("template.json")
 
     kill1 = input("first kill\n").lower()
-    Overseer.kill(kill1)
+    if kill1 != " ":
+        Overseer.kill(kill1)
+    else:
+        print("no kill")
     kill2 = input("second kill\n").lower()
-    Overseer.kill(kill2)
+    if kill2 != " ":
+        Overseer.kill(kill2)
+    else:
+        print("no kill")

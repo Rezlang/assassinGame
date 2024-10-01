@@ -5,10 +5,19 @@
         "james"
     ],
     "game_settings": {
-        "round_time_minutes": 1,
+        "round_time_minutes": 0.1,
         "shuffle_targets": true
     },
     "rounds": {
-        
+        "1": {
+            "john": "james",
+            "james": "jim",
+            "jim": "john"
+        },
+        "1": {
+            "john": "james",
+            "james": "jim",
+            "jim": "john"
+        }
     }
 }

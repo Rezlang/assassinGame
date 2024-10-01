@@ -25,9 +25,16 @@ class GameOverseer:
         self.start_round_timer(self.round_time_minutes)
         print("Round {} starting for {} minutes".format(
             self.current_round, self.round_time_minutes))
-        
+
+    def end_round(self):
+        for pair in self.targets.items():
+            if pair[1] in self.alive_players:
+                continue
+            self.alive_players.remove(pair[0])
+        self.setup_round
+
     def start_round_timer(self, minutes):
-        timer = threading.Timer(minutes * 60, self.setup_round)
+        timer = threading.Timer(minutes * 60, self.end_round)
         timer.start()
         return timer
 
@@ -44,10 +51,10 @@ class GameOverseer:
         with open(self.jsonFile, 'w') as file:
             json.dump(self.data, file, indent=4)
 
-    def assigntargets(self):
-        if self.shuffletargets:
-            random.shuffle(self.aliveplayers)
-        targets = {self.aliveplayers[i]: self.alive_players[(
+    def assign_targets(self):
+        if self.shuffle_targets:
+            random.shuffle(self.alive_players)
+        targets = {self.alive_players[i]: self.alive_players[(
             i + 1) % len(self.alive_players)] for i in range(len(self.alive_players))}
         self.targets = targets
         print(targets)

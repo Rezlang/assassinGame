@@ -25,3 +25,21 @@ class GameOverseer:
         self.start_round_timer(self.round_time_minutes)
         print("Round {} starting for {} minutes".format(
             self.current_round, self.round_time_minutes))
+        
+    def start_round_timer(self, minutes):
+        timer = threading.Timer(minutes * 60, self.setup_round)
+        timer.start()
+        return timer
+
+    def load_json(self, file_path):
+        with open(file_path, 'r') as json_file:
+            data = json.load(json_file)
+        return data
+
+    def json_round_update(self, round):
+        self.data = self.load_json(self.jsonFile)
+        if "rounds" not in self.data:
+            self.data["rounds"] = {}
+        self.data["rounds"][round] = self.targets
+        with open(self.jsonFile, 'w') as file:
+            json.dump(self.data, file, indent=4)

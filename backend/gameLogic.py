@@ -8,13 +8,13 @@ import shutil
 class GameOverseer:
 
     def __init__(self):
+        self.game_key = None
         self.data = self.load_json(True)
         self.alive_players = self.data["all_players"]
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
         self.targets = None
         self.current_round = 0
-        self.game_key = None
         self.setup_round()
 
     def setup_round(self):

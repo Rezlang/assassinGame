@@ -83,12 +83,12 @@ if __name__ == "__main__":
     Overseer = GameOverseer()
 
     kill1 = input("first kill\n").lower()
-    if kill1 != " ":
+    if kill1 != "":
         Overseer.kill(kill1)
     else:
         print("no kill")
     kill2 = input("second kill\n").lower()
-    if kill2 != " ":
+    if kill2 != "":
         Overseer.kill(kill2)
     else:
         print("no kill")

@@ -46,8 +46,8 @@ class GameOverseer:
 
     def assign_targets(self):
         if self.shuffle_targets:
-            random.shuffle(self.aliveplayers)
-        targets = {self.aliveplayers[i]: self.alive_players[(
+            random.shuffle(self.alive_players)
+        targets = {self.alive_players[i]: self.alive_players[(
             i + 1) % len(self.alive_players)] for i in range(len(self.alive_players))}
         self.targets = targets
         print(targets)

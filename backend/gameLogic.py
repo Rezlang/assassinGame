@@ -28,9 +28,8 @@ class GameOverseer:
 
     def end_round(self):
         for pair in self.targets.items():
-            if pair[1] in self.alive_players:
-                continue
-            self.alive_players.remove(pair[0])
+            if pair[1] in self.alive_players and pair[0] in self.alive_players:
+                self.alive_players.remove(pair[0])
         self.setup_round
 
     def start_round_timer(self, minutes):

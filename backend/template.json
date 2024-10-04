@@ -1,11 +1,15 @@
 {
     "all_players": [
-
+        ["john", 1124],
+        ["jim", 2453],
+        ["james", 4678]
     ],
     "game_settings": {
-        "round_time_minutes": 60,
+        "round_time_minutes": 0.1,
         "shuffle_targets": false,
-        "kill_radius_feet": 50
+        "kill_radius_feet": 50,
+        "game_status": "waiting_for_players",
+        "game_owner": ""
     },
     "rounds": {
 

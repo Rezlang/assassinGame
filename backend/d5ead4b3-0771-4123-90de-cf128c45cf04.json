@@ -1,0 +1,41 @@
+{
+    "all_players": [
+        [
+            "john",
+            1124
+        ],
+        [
+            "jim",
+            2453
+        ],
+        [
+            "james",
+            4678
+        ],
+        [
+            "test",
+            1234
+        ]
+    ],
+    "game_settings": {
+        "round_time_minutes": 0.1,
+        "shuffle_targets": false,
+        "kill_radius_feet": 50,
+        "game_status": "waiting_for_players",
+        "game_owner": "123f4rgnjtibo3rjel"
+    },
+    "rounds": {
+        "1": {
+            "('john', 1124)": "('jim', 2453)",
+            "('jim', 2453)": "('james', 4678)",
+            "('james', 4678)": "('test', 1234)",
+            "('test', 1234)": "('john', 1124)"
+        },
+        "2": {
+            "('john', 1124)": "('jim', 2453)",
+            "('jim', 2453)": "('james', 4678)",
+            "('james', 4678)": "('test', 1234)",
+            "('test', 1234)": "('john', 1124)"
+        }
+    }
+}

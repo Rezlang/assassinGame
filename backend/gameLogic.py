@@ -105,11 +105,12 @@ class GameOverseer:
         timer.start()
         return timer
 
-    def game_init(self, owner):
+    def game_init(self, owner_name, owner_id):
         print("game_init")
         self.data = self.load_json()
-        self.data["game_settings"]["game_owner"] = owner
+        self.data["game_settings"]["game_owner"] = owner_id
         self.data["game_settings"]["game_status"] = "waiting_for_players"
+        self.join_game(owner_name, owner_id)
         with open(f"{self.game_key}.json", 'w') as file:
             json.dump(self.data, file, indent=4)
 
@@ -124,21 +125,26 @@ class GameOverseer:
 
     def join_game(self, player_name, player_id):
         print("join_game")
-        new_player = [player_name, player_id]
+        new_player = (player_name, player_id)
         self.alive_players.append(new_player)
         print(f"{player_name} joined the game")
+        self.data = self.load_json()
+        self.data["all_players"].append([player_name, player_id])
+        with open(f"{self.game_key}.json", 'w') as file:
+            json.dump(self.data, file, indent=4)
 
 
-def init(owner):
+def init(owner_name, owner_id):
     print("init")
     Overseer = GameOverseer()
-    Overseer.game_init(owner)
+    Overseer.game_init(owner_name, owner_id)
     return Overseer
 
 
 if __name__ == "__main__":
     owner = "123f4rgnjtibo3rjel"
     Overseer = init(owner)
+    Overseer.join_game("test", 1234)
     Overseer.game_start(owner)
 
     kill1 = input("first kill\n").lower()

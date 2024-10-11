@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 export default function InGameNavbar() {
-    const navigation = useNavigation();  // Remove the wrong parameter
+    const navigation = useNavigation();
 
     return (
         <View style={styles.header}>

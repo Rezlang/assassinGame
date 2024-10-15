@@ -100,3 +100,46 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
+
+export const homepageStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    position: 'absolute',
+    top: 50,
+    left: 20,
+    right: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  logoutText: {
+    fontSize: 16,
+    color: '#007BFF',
+  },
+  userText: {
+    fontSize: 16,
+    color: '#333',
+    flexShrink: 1,
+    textAlign: 'right',
+    maxWidth: '50%',
+  },
+  targetText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginBottom: 40,
+    color: '#333',
+  },
+  buttonContainer: {
+    width: '75%',
+    justifyContent: 'center',
+  },
+  button: {
+    marginVertical: 10,
+  },
+});

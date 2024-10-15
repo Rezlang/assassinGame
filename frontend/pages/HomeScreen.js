@@ -1,33 +1,41 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, TouchableOpacity } from 'react-native';
+import { homepageStyles } from '../styles.js'
 
-// Temporary Home component
 const HomeScreen = () => {
+    const handleKill = () => {
+        Alert.alert('Kill action clicked!');
+    };
+
+    const handleAction = () => {
+        Alert.alert('Action button clicked!');
+    };
+
+    const handleLogout = () => {
+        Alert.alert('Logging out...');
+    };
+
     return (
-        <View>
-            <Text>Welcome to Assassin Game</Text>
-            <Text>This is the temporary homepage. More features coming soon!</Text>
+        <View style={homepageStyles.container}>
+            <View style={homepageStyles.header}>
+                <TouchableOpacity onPress={handleLogout}>
+                    <Text style={homepageStyles.logoutText}>Logout</Text>
+                </TouchableOpacity>
+                <Text style={homepageStyles.userText}>User: Placeholder</Text>
+            </View>
+            
+            <Text style={homepageStyles.targetText}>Target: ________</Text>
+            
+            <View style={homepageStyles.buttonContainer}>
+                <View style={homepageStyles.button}>
+                    <Button title="Kill" onPress={handleKill} />
+                </View>
+                <View style={homepageStyles.button}>
+                    <Button title="Action" onPress={handleAction} />
+                </View>
+            </View>
         </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-    },
-});
 
 export default HomeScreen;

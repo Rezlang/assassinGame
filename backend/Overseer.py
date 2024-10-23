@@ -7,12 +7,12 @@ from firebase_admin import firestore
 
 
 class Overseer:
-    def __init__(self, db, owner_name, owner_id):
+    def __init__(self, db, owner_name, owner_id, game_id):
         print("Initializing GameOverseer")
         self.db = db
-        self.game_key = str(uuid.uuid4())
+        self.game_id = game_id
         self.owner_id = owner_id
-        self.data = self.new_game(self.game_key, owner_id)
+        self.data = self.firebase_new_game(self.game_id, owner_id)
         # Players are now lists: [name, id]
         self.alive_players = []
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
@@ -21,7 +21,7 @@ class Overseer:
         self.current_round = 0
         self.join_game(owner_name, owner_id)
 
-    def new_game(self, game_id, owner_id, round_time_minutes=0.5, shuffle_targets=False, kill_radius_feet=50, game_status="waiting_for_players"):
+    def firebase_new_game(self, game_id, owner_id, round_time_minutes=0.5, shuffle_targets=False, kill_radius_feet=50, game_status="waiting_for_players"):
         print("Creating a new game in Firestore")
         doc_ref = self.db.collection('games').document(game_id)
         data = {
@@ -45,7 +45,7 @@ class Overseer:
         new_player = {"name": player_name, "id": player_id}
         self.alive_players.append(new_player)
         # Update Firestore
-        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref = self.db.collection('games').document(self.game_id)
         doc_ref.update({
             "all_players": firestore.ArrayUnion([new_player]),
             "alive_players": firestore.ArrayUnion([new_player])
@@ -54,7 +54,7 @@ class Overseer:
 
     def load_game_data(self):
         print("Loading game data from Firestore")
-        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref = self.db.collection('games').document(self.game_id)
         doc = doc_ref.get()
         if doc.exists:
             self.data = doc.to_dict()
@@ -71,7 +71,7 @@ class Overseer:
             print("Not owner, cannot start game")
             return
         # Update game status in Firestore
-        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref = self.db.collection('games').document(self.game_id)
         doc_ref.update({
             "game_settings.game_status": "in_progress"
         })
@@ -93,7 +93,7 @@ class Overseer:
     def assign_targets(self):
         print("Assigning targets to players")
         # Fetch the latest data from Firestore
-        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref = self.db.collection('games').document(self.game_id)
         doc = doc_ref.get()
         if doc.exists:
             self.alive_players = doc.to_dict().get('alive_players', [])
@@ -118,7 +118,7 @@ class Overseer:
 
     def update_round_in_firestore(self, round_number):
         print(f"Updating round {round_number} in Firestore")
-        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref = self.db.collection('games').document(self.game_id)
         doc_ref.update({
             f"rounds.{round_number}": self.targets
         })
@@ -145,7 +145,7 @@ class Overseer:
                 print("Both killer and target are alive")
                 self.alive_players.remove(killed)
                 # Update Firestore
-                doc_ref = self.db.collection('games').document(self.game_key)
+                doc_ref = self.db.collection('games').document(self.game_id)
                 doc_ref.update({
                     "alive_players": firestore.ArrayRemove([list(killed)])
                 })
@@ -172,7 +172,7 @@ class Overseer:
             for player in to_remove:
                 self.alive_players.remove(player)
                 # Update Firestore
-                doc_ref = self.db.collection('games').document(self.game_key)
+                doc_ref = self.db.collection('games').document(self.game_id)
                 doc_ref.update({
                     "alive_players": firestore.ArrayRemove([list(player)])
                 })

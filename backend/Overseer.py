@@ -35,7 +35,8 @@ class Overseer:
             },
             "all_players": [],
             "alive_players": [],
-            "rounds": {}
+            "rounds": {},
+            "winner": {}
         }
         doc_ref.set(data)
         return data
@@ -81,7 +82,8 @@ class Overseer:
         print("Setting up a new round")
         if len(self.alive_players) == 1:
             # Print only the name
-            print(f"{self.alive_players[0][0]} wins!")
+            winner = self.alive_players[0]
+            self.winner(winner["name"], winner["id"])
             exit()
         self.current_round += 1
         self.assign_targets()
@@ -89,6 +91,20 @@ class Overseer:
         self.start_round_timer(self.round_time_minutes)
         print(f"Round {self.current_round} starting for {
               self.round_time_minutes} minutes")
+
+    def winner(self, winner_name, winner_id):
+        winner_data = {
+            "name": winner_name,
+            "id": winner_id
+        }
+        doc_ref = self.db.collection('games').document(self.game_key)
+        doc_ref.update({
+            "winner": winner_data,
+            "game_settings.game_status": "completed"
+        })
+
+        print(f"Winner {winner_name} with ID" +
+              f"{winner_id} has been saved to Firestore and game marked as completed.")
 
     def assign_targets(self):
         print("Assigning targets to players")
@@ -133,28 +149,44 @@ class Overseer:
         if not self.targets:
             print("No targets assigned yet")
             return
-        print(f"Processing kill by {killer_name}")
-        killer = next((player for player in self.alive_players if player[0].lower(
+
+        # Find killer based on their name
+        killer = next((player for player in self.alive_players if player["name"].lower(
         ) == killer_name.lower()), None)
+
         if killer:
+            killer_id = killer["id"]
             print(f"Killer found: {killer}")
-            # Get target by using tuple (name, id)
-            killed = self.targets.get(tuple(killer))
-            print(f"Target to be killed: {killed}")
-            if killed and killed in self.alive_players:
-                print("Both killer and target are alive")
-                self.alive_players.remove(killed)
+
+            # Look up the target's id using the killer's id
+            target_id = self.targets.get(killer_id)
+            if not target_id:
+                print(f"No target assigned to {killer_name}")
+                return
+
+            # Find the target in the alive players
+            target = next(
+                (player for player in self.alive_players if player["id"] == target_id), None)
+
+            if target:
+                print(f"Target {target['name']} (ID: {
+                      target['id']}) is being killed by {killer_name}")
+
+                # Remove the target from alive_players
+                self.alive_players.remove(target)
+
                 # Update Firestore
                 doc_ref = self.db.collection('games').document(self.game_id)
                 doc_ref.update({
-                    "alive_players": firestore.ArrayRemove([list(killed)])
+                    "alive_players": firestore.ArrayRemove([target])
                 })
-                # Print names for readability
-                print(f"{killed[0]} was killed by {killer[0]}")
+
+                print(f"{target['name']} was killed by {killer_name}")
             else:
-                print("Target is already dead or does not exist")
+                print(
+                    f"Target {target_id} is already dead or not found among alive players.")
         else:
-            print("Killer not found among alive players")
+            print(f"Killer {killer_name} not found among alive players")
 
     def end_round(self):
         print("Ending the current round")

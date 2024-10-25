@@ -15,8 +15,7 @@ def add_user(user_id, user_name):
 
 def new_game(game_id, owner_id, round_time_minutes=1, shuffle_targets=False, kill_radius_feet=50, game_status="waiting_for_players"):
     doc_ref = db.collection('games').document(game_id)
-
-    doc_ref.set({
+    data = {
         "game_settings": {
             "id": game_id,
             "owner_id": owner_id,
@@ -29,7 +28,9 @@ def new_game(game_id, owner_id, round_time_minutes=1, shuffle_targets=False, kil
 
         "all_players": [],
         "rounds": {}
-    })
+    }
+    doc_ref.set(data)
+    return
 
 
 def add_player_to_game(game_id, player_id):

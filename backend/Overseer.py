@@ -1,19 +1,17 @@
+# Overseer.py
+
 import random
 import threading
 import uuid
-import firebase_admin
-from firebase_admin import credentials
-from firebase_admin import firestore
+import fb  # Import the fb module
 
 
 class Overseer:
-    def __init__(self, db, owner_name, owner_id, game_id):
+    def __init__(self, owner_name, owner_id, game_id):
         print("Initializing GameOverseer")
-        self.db = db
         self.game_id = game_id
         self.owner_id = owner_id
-        self.data = self.firebase_new_game(self.game_id, owner_id)
-        # Players are now lists: [name, id]
+        self.data = fb.new_game(self.game_id, owner_id)
         self.alive_players = []
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
@@ -21,45 +19,18 @@ class Overseer:
         self.current_round = 0
         self.join_game(owner_name, owner_id)
 
-    def firebase_new_game(self, game_id, owner_id, round_time_minutes=0.5, shuffle_targets=False, kill_radius_feet=50, game_status="waiting_for_players"):
-        print("Creating a new game in Firestore")
-        doc_ref = self.db.collection('games').document(game_id)
-        data = {
-            "game_settings": {
-                "id": game_id,
-                "owner_id": owner_id,
-                "round_time_minutes": round_time_minutes,
-                "shuffle_targets": shuffle_targets,
-                "kill_radius_feet": kill_radius_feet,
-                "game_status": game_status
-            },
-            "all_players": [],
-            "alive_players": [],
-            "rounds": {},
-            "winner": {}
-        }
-        doc_ref.set(data)
-        return data
-
     def join_game(self, player_name, player_id):
         print(f"{player_name} is joining the game")
         new_player = {"name": player_name, "id": player_id}
         self.alive_players.append(new_player)
-        # Update Firestore
-        doc_ref = self.db.collection('games').document(self.game_id)
-        doc_ref.update({
-            "all_players": firestore.ArrayUnion([new_player]),
-            "alive_players": firestore.ArrayUnion([new_player])
-        })
+        fb.add_player_to_game(self.game_id, new_player)
         print(f"{player_name} joined the game")
 
     def load_game_data(self):
         print("Loading game data from Firestore")
-        doc_ref = self.db.collection('games').document(self.game_id)
-        doc = doc_ref.get()
-        if doc.exists:
-            self.data = doc.to_dict()
-            self.alive_players = [tuple(x) for x in self.data["alive_players"]]
+        self.data = fb.get_game_data(self.game_id)
+        if self.data:
+            self.alive_players = self.data.get("alive_players", [])
             self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
             self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
         else:
@@ -71,23 +42,18 @@ class Overseer:
         if self.data["game_settings"]["owner_id"] != sender_id:
             print("Not owner, cannot start game")
             return
-        # Update game status in Firestore
-        doc_ref = self.db.collection('games').document(self.game_id)
-        doc_ref.update({
-            "game_settings.game_status": "in_progress"
-        })
+        fb.update_game_status(self.game_id, "in_progress")
         self.setup_round()
 
     def setup_round(self):
         print("Setting up a new round")
         if len(self.alive_players) == 1:
-            # Print only the name
             winner = self.alive_players[0]
             self.winner(winner["name"], winner["id"])
             exit()
         self.current_round += 1
         self.assign_targets()
-        self.update_round_in_firestore(self.current_round)
+        fb.update_round(self.game_id, self.current_round, self.targets)
         self.start_round_timer(self.round_time_minutes)
         print(f"Round {self.current_round} starting for {
               self.round_time_minutes} minutes")
@@ -97,32 +63,19 @@ class Overseer:
             "name": winner_name,
             "id": winner_id
         }
-        doc_ref = self.db.collection('games').document(self.game_key)
-        doc_ref.update({
-            "winner": winner_data,
-            "game_settings.game_status": "completed"
-        })
-
-        print(f"Winner {winner_name} with ID" +
-              f"{winner_id} has been saved to Firestore and game marked as completed.")
+        fb.update_winner(self.game_id, winner_data)
+        print(f"Winner {winner_name} with ID {
+              winner_id} has been saved to Firestore and game marked as completed.")
 
     def assign_targets(self):
         print("Assigning targets to players")
-        # Fetch the latest data from Firestore
-        doc_ref = self.db.collection('games').document(self.game_id)
-        doc = doc_ref.get()
-        if doc.exists:
-            self.alive_players = doc.to_dict().get('alive_players', [])
-            print(f"Loaded {len(self.alive_players)
-                            } alive players from Firestore.")
-        else:
-            print("Game data not found in Firestore.")
-            return
+        self.alive_players = fb.get_alive_players(self.game_id)
+        print(f"Loaded {len(self.alive_players)
+                        } alive players from Firestore.")
 
         if self.shuffle_targets:
             random.shuffle(self.alive_players)
 
-        # Assign targets as a dictionary where each player's id is assigned to another player's id
         targets = {
             player['id']: self.alive_players[(
                 i + 1) % len(self.alive_players)]['id']
@@ -131,13 +84,6 @@ class Overseer:
 
         self.targets = targets
         print(f"Targets assigned: {targets}")
-
-    def update_round_in_firestore(self, round_number):
-        print(f"Updating round {round_number} in Firestore")
-        doc_ref = self.db.collection('games').document(self.game_id)
-        doc_ref.update({
-            f"rounds.{round_number}": self.targets
-        })
 
     def start_round_timer(self, minutes):
         print("Starting round timer")
@@ -150,7 +96,6 @@ class Overseer:
             print("No targets assigned yet")
             return
 
-        # Find killer based on their name
         killer = next((player for player in self.alive_players if player["name"].lower(
         ) == killer_name.lower()), None)
 
@@ -158,13 +103,11 @@ class Overseer:
             killer_id = killer["id"]
             print(f"Killer found: {killer}")
 
-            # Look up the target's id using the killer's id
             target_id = self.targets.get(killer_id)
             if not target_id:
                 print(f"No target assigned to {killer_name}")
                 return
 
-            # Find the target in the alive players
             target = next(
                 (player for player in self.alive_players if player["id"] == target_id), None)
 
@@ -172,14 +115,8 @@ class Overseer:
                 print(f"Target {target['name']} (ID: {
                       target['id']}) is being killed by {killer_name}")
 
-                # Remove the target from alive_players
                 self.alive_players.remove(target)
-
-                # Update Firestore
-                doc_ref = self.db.collection('games').document(self.game_id)
-                doc_ref.update({
-                    "alive_players": firestore.ArrayRemove([target])
-                })
+                fb.remove_alive_player(self.game_id, target)
 
                 print(f"{target['name']} was killed by {killer_name}")
             else:
@@ -191,35 +128,29 @@ class Overseer:
     def end_round(self):
         print("Ending the current round")
         to_remove = []
-        for killer, target in self.targets.items():
-            # Check if both killer and target are still alive
-            if target in self.alive_players and killer in self.alive_players:
+        for killer_id, target_id in self.targets.items():
+            killer = next(
+                (player for player in self.alive_players if player["id"] == killer_id), None)
+            target = next(
+                (player for player in self.alive_players if player["id"] == target_id), None)
+            if target and killer:
                 to_remove.append(killer)
 
         if len(to_remove) == len(self.alive_players):
-            # All remaining players win
-            winners = [player[0] for player in self.alive_players]
+            winners = [player['name'] for player in self.alive_players]
             print(f"{winners} win!")
         else:
             for player in to_remove:
                 self.alive_players.remove(player)
-                # Update Firestore
-                doc_ref = self.db.collection('games').document(self.game_id)
-                doc_ref.update({
-                    "alive_players": firestore.ArrayRemove([list(player)])
-                })
+                fb.remove_alive_player(self.game_id, player)
         self.setup_round()
 
 
-cred = credentials.Certificate(
-    "./assasingame-a6626-firebase-adminsdk-qhtmq-40eeea4de0.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-
-
+# Initialize the game
 owner_id = "123f4rgnjtibo3rjel"
 owner_name = "josh"
-overseer = Overseer(db, owner_name, owner_id)
+game_id = "game123"
+overseer = Overseer(owner_name, owner_id, game_id)
 overseer.join_game("tim", "1234")
 overseer.join_game("rahul", "12345")
 overseer.game_start(owner_id)
@@ -234,16 +165,3 @@ if kill2 != "":
     overseer.kill(kill2)
 else:
     print("no kill")
-
-
-# input("new game\n")
-# game_id = "0"
-# new_game(game_id, "1")
-# input("add_player_to_game 2\n")
-# add_player_to_game(game_id, "2")
-# input("add_player_to_game 3\n")
-# add_player_to_game(game_id, "3")
-# input("add_round 0\n")
-# add_round(game_id, "0", {"1": "2", "2": "3", "3": "1"})
-# input("add_round 1\n")
-# add_round(game_id, "1", {"1": "2", "2": "1"})

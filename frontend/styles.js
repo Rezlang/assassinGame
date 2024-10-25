@@ -143,6 +143,7 @@ export const homepageStyles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+
 export const createGameStyles = StyleSheet.create({
   formContainer: {
       width: '100%',

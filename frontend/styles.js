@@ -143,3 +143,44 @@ export const homepageStyles = StyleSheet.create({
     marginVertical: 10,
   },
 });
+export const createGameStyles = StyleSheet.create({
+  formContainer: {
+      width: '100%',
+      paddingHorizontal: 20,
+      marginTop: 60,
+  },
+  pickerContainer: {
+      backgroundColor: '#383c44',
+      borderRadius: 5,
+      marginBottom: 20,
+  },
+  picker: {
+      height: 50,
+      width: '100%',
+      color: 'white',
+  },
+  shuffleContainer: {
+      marginTop: 15,
+      padding: 15,
+      backgroundColor: '#383c44',
+      borderRadius: 10,
+      borderWidth: 1,
+      borderColor: '#484c54',
+  },
+  shuffleContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+  },
+  description: {
+      fontSize: 14,
+      color: '#a0a0a0',
+      marginTop: 4,
+  },
+  createButton: {
+      position: 'absolute',
+      bottom: 30,
+      width: '90%',
+      marginHorizontal: '5%',
+  },
+});

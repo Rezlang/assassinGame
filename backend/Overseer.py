@@ -55,8 +55,8 @@ class Overseer:
         self.assign_targets()
         fb.update_round(self.game_id, self.current_round, self.targets)
         self.start_round_timer(self.round_time_minutes)
-        print(f"Round {self.current_round} starting for {
-              self.round_time_minutes} minutes")
+        print(f"Round {self.current_round} starting for" +
+              f"{self.round_time_minutes} minutes")
 
     def winner(self, winner_name, winner_id):
         winner_data = {
@@ -64,14 +64,14 @@ class Overseer:
             "id": winner_id
         }
         fb.update_winner(self.game_id, winner_data)
-        print(f"Winner {winner_name} with ID {
-              winner_id} has been saved to Firestore and game marked as completed.")
+        print(f"Winner {winner_name} with ID " +
+              f"{winner_id} has been saved to Firestore and game marked as completed.")
 
     def assign_targets(self):
         print("Assigning targets to players")
         self.alive_players = fb.get_alive_players(self.game_id)
-        print(f"Loaded {len(self.alive_players)
-                        } alive players from Firestore.")
+        print(f"Loaded {len(self.alive_players)} " +
+              f"alive players from Firestore.")
 
         if self.shuffle_targets:
             random.shuffle(self.alive_players)
@@ -112,8 +112,8 @@ class Overseer:
                 (player for player in self.alive_players if player["id"] == target_id), None)
 
             if target:
-                print(f"Target {target['name']} (ID: {
-                      target['id']}) is being killed by {killer_name}")
+                print(f"Target {target['name']} (ID: " +
+                      f"{target['id']}) is being killed by {killer_name}")
 
                 self.alive_players.remove(target)
                 fb.remove_alive_player(self.game_id, target)

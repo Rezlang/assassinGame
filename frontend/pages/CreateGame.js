@@ -6,7 +6,7 @@ import { Picker } from '@react-native-picker/picker';
 
 const CreateGame = () =>{
     const [selectedValue, setSelectedValue] = useState('30');
-
+    const [customValue, setCustomValue] = useState('');
     return (
         <View style={styles.container}>
         <Picker

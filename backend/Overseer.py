@@ -24,7 +24,8 @@ class Overseer:
         new_player = {"name": player_name, "id": player_id}
         self.alive_players.append(new_player)
         fb.add_player_to_game(self.game_id, new_player)
-        print(f"{player_name} joined the game")
+        # print(f"{player_name} joined the game")
+        return f"{player_name} joined the game"
 
     def load_game_data(self):
         print("Loading game data from Firestore")
@@ -44,6 +45,7 @@ class Overseer:
             return
         fb.update_game_status(self.game_id, "in_progress")
         self.setup_round()
+        return "game started"
 
     def setup_round(self):
         print("Setting up a new round")
@@ -91,39 +93,37 @@ class Overseer:
         timer.start()
         return timer
 
-    def kill(self, killer_name):
+    def kill(self, killer_name, killer_id):
         if not self.targets:
-            print("No targets assigned yet")
-            return
+            # print("No targets assigned yet")
+            return "No targets assigned yet"
 
         killer = next((player for player in self.alive_players if player["name"].lower(
-        ) == killer_name.lower()), None)
+        ) == killer_name.lower() and player["id"].lower() == killer_id.lower()), None)
 
         if killer:
-            killer_id = killer["id"]
-            print(f"Killer found: {killer}")
-
             target_id = self.targets.get(killer_id)
             if not target_id:
-                print(f"No target assigned to {killer_name}")
-                return
+                # print(f"No target assigned to {killer_name}")
+                return f"No target assigned to {killer_name}"
 
             target = next(
                 (player for player in self.alive_players if player["id"] == target_id), None)
 
             if target:
-                print(f"Target {target['name']} (ID: " +
-                      f"{target['id']}) is being killed by {killer_name}")
 
                 self.alive_players.remove(target)
                 fb.remove_alive_player(self.game_id, target)
 
                 print(f"{target['name']} was killed by {killer_name}")
+                return f"{target['name']} was killed by {killer_name}"
             else:
-                print(
-                    f"Target {target_id} is already dead or not found among alive players.")
+                # print(
+                #     f"Target {target_id} is already dead or not found among alive players.")
+                return f"Target {target_id} is already dead or not found among alive players."
         else:
-            print(f"Killer {killer_name} not found among alive players")
+            # print(f"Killer {killer_name} not found among alive players")
+            return f"Killer {killer_name} not found among alive players"
 
     def end_round(self):
         print("Ending the current round")
@@ -146,22 +146,22 @@ class Overseer:
         self.setup_round()
 
 
-# Initialize the game
-owner_id = "123f4rgnjtibo3rjel"
-owner_name = "josh"
-game_id = "game123"
-overseer = Overseer(owner_name, owner_id, game_id)
-overseer.join_game("tim", "1234")
-overseer.join_game("rahul", "12345")
-overseer.game_start(owner_id)
+# # Initialize the game
+# owner_id = "123f4rgnjtibo3rjel"
+# owner_name = "josh"
+# game_id = "game123"
+# overseer = Overseer(owner_name, owner_id, game_id)
+# overseer.join_game("tim", "1234")
+# overseer.join_game("rahul", "12345")
+# overseer.game_start(owner_id)
 
-kill1 = input("first kill\n").lower()
-if kill1 != "":
-    overseer.kill(kill1)
-else:
-    print("no kill")
-kill2 = input("second kill\n").lower()
-if kill2 != "":
-    overseer.kill(kill2)
-else:
-    print("no kill")
+# kill1 = input("first kill\n").lower()
+# if kill1 != "":
+#     overseer.kill(kill1)
+# else:
+#     print("no kill")
+# kill2 = input("second kill\n").lower()
+# if kill2 != "":
+#     overseer.kill(kill2)
+# else:
+#     print("no kill")

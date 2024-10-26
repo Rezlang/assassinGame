@@ -27,8 +27,8 @@ def join_game():
         return jsonify({"error": "game_id, user_name, and user_id are required"}), 400
 
     try:
-        game_api.join_game(game_id, user_name, user_id)
-        return jsonify({"message": "Successfully joined the game"}), 200
+        msg = game_api.join_game(game_id, user_name, user_id)
+        return jsonify({"message": msg}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
 
@@ -43,8 +43,8 @@ def kill():
         return jsonify({"error": "game_id, killer_name, and killer_id are required"}), 400
 
     try:
-        game_api.kill(game_id, killer_name, killer_id)
-        return jsonify({"message": "Kill registered"}), 200
+        msg = game_api.kill(game_id, killer_name, killer_id)
+        return jsonify({"message": msg}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
 
@@ -58,8 +58,8 @@ def start_game():
         return jsonify({"error": "game_id and user_id are required"}), 400
 
     try:
-        game_api.start_game(game_id, user_id)
-        return jsonify({"message": "Game started"}), 200
+        msg = game_api.start_game(game_id, user_id)
+        return jsonify({"message": msg}), 200
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
 

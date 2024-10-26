@@ -2,10 +2,10 @@
 curl -X POST http://127.0.0.1:5000/create_game -H "Content-Type: application/json" -d '{"owner_name": "Alice", "owner_id": "123"}'
 
 # Join a game
-curl -X POST http://127.0.0.1:5000/join_game -H "Content-Type: application/json" -d '{"game_id": "1", "user_name": "Bob", "user_id": "456"}'
-
-# Record a kill
-curl -X POST http://127.0.0.1:5000/kill -H "Content-Type: application/json" -d '{"game_id": "1", "killer_name": "Bob", "killer_id": "456"}'
+curl -X POST http://127.0.0.1:5000/join_game -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "user_name": "Bob", "user_id": "456"}'
 
 # Start a game
-curl -X POST http://127.0.0.1:5000/start_game -H "Content-Type: application/json" -d '{"game_id": "1", "user_id": "123"}'
+curl -X POST http://127.0.0.1:5000/start_game -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "user_id": "123"}'
+
+Kill
+curl -X POST http://127.0.0.1:5000/kill -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "killer_name": "Bob", "killer_id": "456"}'

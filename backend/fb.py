@@ -4,14 +4,16 @@ import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import firestore
 
-# Initialize Firebase
-cred = credentials.Certificate(
-    "./assasingame-a6626-firebase-adminsdk-qhtmq-40eeea4de0.json")
-firebase_admin.initialize_app(cred)
-db = firestore.client()
+
+def init_firebase():
+    if not firebase_admin._apps:
+        cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
+        firebase_admin.initialize_app(cred)
+    return firebase_admin.get_app()
 
 
 def add_user(user_id, user_name):
+    db = init_firebase()
     doc_ref = db.collection('users').document(user_id)
     doc_ref.set({
         'id': user_id,
@@ -21,6 +23,7 @@ def add_user(user_id, user_name):
 
 
 def new_game(game_id, owner_id, round_time_minutes=1, shuffle_targets=False, kill_radius_feet=50, game_status="waiting_for_players"):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     data = {
         "game_settings": {
@@ -42,6 +45,7 @@ def new_game(game_id, owner_id, round_time_minutes=1, shuffle_targets=False, kil
 
 
 def add_player_to_game(game_id, player_data):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         "all_players": firestore.ArrayUnion([player_data]),
@@ -50,6 +54,7 @@ def add_player_to_game(game_id, player_data):
 
 
 def update_game_status(game_id, game_status):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         "game_settings.game_status": game_status
@@ -57,6 +62,7 @@ def update_game_status(game_id, game_status):
 
 
 def get_game_data(game_id):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc = doc_ref.get()
     if doc.exists:
@@ -66,6 +72,7 @@ def get_game_data(game_id):
 
 
 def update_round(game_id, round_number, targets):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         f"rounds.{round_number}": targets
@@ -73,6 +80,7 @@ def update_round(game_id, round_number, targets):
 
 
 def update_alive_players(game_id, alive_players):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         "alive_players": alive_players
@@ -80,6 +88,7 @@ def update_alive_players(game_id, alive_players):
 
 
 def remove_alive_player(game_id, player_data):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         "alive_players": firestore.ArrayRemove([player_data])
@@ -87,6 +96,7 @@ def remove_alive_player(game_id, player_data):
 
 
 def update_winner(game_id, winner_data):
+    db = init_firebase()
     doc_ref = db.collection('games').document(game_id)
     doc_ref.update({
         "winner": winner_data,

@@ -131,6 +131,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+.xcodeproj
+
 __pycache__/
 
 assasingame-a6626-firebase-adminsdk-qhtmq-40eeea4de0.json

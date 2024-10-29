@@ -3,7 +3,7 @@
 import random
 import threading
 import uuid
-import fb  # Import the fb module
+import firebase  # Import the firebase module
 
 
 class Overseer:
@@ -11,7 +11,7 @@ class Overseer:
         print("Initializing GameOverseer")
         self.game_id = game_id
         self.owner_id = owner_id
-        self.data = fb.new_game(self.game_id, owner_id)
+        self.data = firebase.new_game(self.game_id, owner_id)
         self.alive_players = []
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
@@ -23,13 +23,13 @@ class Overseer:
         print(f"{player_name} is joining the game")
         new_player = {"name": player_name, "id": player_id}
         self.alive_players.append(new_player)
-        fb.add_player_to_game(self.game_id, new_player)
+        firebase.add_player_to_game(self.game_id, new_player)
         # print(f"{player_name} joined the game")
         return f"{player_name} joined the game"
 
     def load_game_data(self):
         print("Loading game data from Firestore")
-        self.data = fb.get_game_data(self.game_id)
+        self.data = firebase.get_game_data(self.game_id)
         if self.data:
             self.alive_players = self.data.get("alive_players", [])
             self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
@@ -43,7 +43,7 @@ class Overseer:
         if self.data["game_settings"]["owner_id"] != sender_id:
             print("Not owner, cannot start game")
             return
-        fb.update_game_status(self.game_id, "in_progress")
+        firebase.update_game_status(self.game_id, "in_progress")
         self.setup_round()
         return "game started"
 
@@ -55,7 +55,7 @@ class Overseer:
             exit()
         self.current_round += 1
         self.assign_targets()
-        fb.update_round(self.game_id, self.current_round, self.targets)
+        firebase.update_round(self.game_id, self.current_round, self.targets)
         self.start_round_timer(self.round_time_minutes)
         print(f"Round {self.current_round} starting for" +
               f"{self.round_time_minutes} minutes")
@@ -65,13 +65,13 @@ class Overseer:
             "name": winner_name,
             "id": winner_id
         }
-        fb.update_winner(self.game_id, winner_data)
+        firebase.update_winner(self.game_id, winner_data)
         print(f"Winner {winner_name} with ID " +
               f"{winner_id} has been saved to Firestore and game marked as completed.")
 
     def assign_targets(self):
         print("Assigning targets to players")
-        self.alive_players = fb.get_alive_players(self.game_id)
+        self.alive_players = firebase.get_alive_players(self.game_id)
         print(f"Loaded {len(self.alive_players)} " +
               f"alive players from Firestore.")
 
@@ -113,7 +113,7 @@ class Overseer:
             if target:
 
                 self.alive_players.remove(target)
-                fb.remove_alive_player(self.game_id, target)
+                firebase.remove_alive_player(self.game_id, target)
 
                 print(f"{target['name']} was killed by {killer_name}")
                 return f"{target['name']} was killed by {killer_name}"
@@ -142,7 +142,7 @@ class Overseer:
         else:
             for player in to_remove:
                 self.alive_players.remove(player)
-                fb.remove_alive_player(self.game_id, player)
+                firebase.remove_alive_player(self.game_id, player)
         self.setup_round()
 
 

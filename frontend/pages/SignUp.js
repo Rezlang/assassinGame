@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { styles } from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const SignUp = () => {
     const navigation = useNavigation();
@@ -12,6 +13,9 @@ const SignUp = () => {
     const [isValid, setValid] = useState(true);
 
     const __doSignUp = () => {
+        setError('')
+        setValid(true)
+
         if (!email) {
             setError('Email required *');
             setValid(false);
@@ -26,8 +30,19 @@ const SignUp = () => {
     };
 
     const __doCreateUser = async (email, password) => {
-        navigation.navigate('Home');
-        return;
+        try {
+            let response = await auth().createUserWithEmailAndPassword(
+                email,
+                password,
+            );
+            if (response && response.user) {
+                Alert.alert('Success ✅', 'Account created successfully');
+                navigation.navigate('Home');
+            }
+        } catch (e) {
+            setError(e.message);
+            console.error(e.message);
+        }
     };
 
     return (

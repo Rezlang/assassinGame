@@ -1,4 +1,6 @@
 ./AssassinGame/node_modules/
+frontend/android/app/google-services.json
+frontend/firebaseConfig.js
 
 # Logs
 logs

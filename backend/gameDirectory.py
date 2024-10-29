@@ -1,11 +1,12 @@
 import Overseer
 import util
+import firebase
 
 
 class GameDirectory:
     def __init__(self):
         self.games = {}
-        self.db = util.init_firebase()
+        self.db = firebase.init_firebase()
 
     def create_game(self, owner_name, owner_id):
         game_id = util.new_id()

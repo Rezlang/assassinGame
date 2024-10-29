@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@react-google-maps/api": "^2.20.3",
     "@react-native-picker/picker": "^2.8.1",
     "react-native-geolocation-service": "^5.3.1",
     "react-native-maps": "^1.18.2"

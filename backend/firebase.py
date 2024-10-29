@@ -10,7 +10,7 @@ def init_firebase():
         cred = credentials.Certificate(
             "./assasingame-a6626-firebase-adminsdk-qhtmq-40eeea4de0.json")
         firebase_admin.initialize_app(cred)
-    return firebase_admin.get_app()
+    return firestore.client()
 
 
 def add_user(user_id, user_name):

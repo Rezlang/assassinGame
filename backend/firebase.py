@@ -7,7 +7,8 @@ from firebase_admin import firestore
 
 def init_firebase():
     if not firebase_admin._apps:
-        cred = credentials.Certificate("path/to/your/serviceAccountKey.json")
+        cred = credentials.Certificate(
+            "./assasingame-a6626-firebase-adminsdk-qhtmq-40eeea4de0.json")
         firebase_admin.initialize_app(cred)
     return firebase_admin.get_app()
 

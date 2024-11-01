@@ -157,24 +157,3 @@ class Overseer:
                 self.alive_players.remove(player)
                 firebase.remove_alive_player(self.game_id, player)
         self.setup_round()
-
-
-# # Initialize the game
-# owner_id = "123f4rgnjtibo3rjel"
-# owner_name = "josh"
-# game_id = "game123"
-# overseer = Overseer(owner_name, owner_id, game_id)
-# overseer.join_game("tim", "1234")
-# overseer.join_game("rahul", "12345")
-# overseer.game_start(owner_id)
-
-# kill1 = input("first kill\n").lower()
-# if kill1 != "":
-#     overseer.kill(kill1)
-# else:
-#     print("no kill")
-# kill2 = input("second kill\n").lower()
-# if kill2 != "":
-#     overseer.kill(kill2)
-# else:
-#     print("no kill")

@@ -15,7 +15,7 @@ const CreateGame = () => {
     return (
         <View style={styles.homePageScrn}>
             <Text style={styles.header}>Create Game</Text>
-            
+
             <View style={createGameStyles.formContainer}>
                 {/* Round Length Section */}
                 <Text style={styles.subTitle}>Round Length</Text>
@@ -83,7 +83,7 @@ const CreateGame = () => {
                 )}
 
                 {/* Shuffle Targets Section */}
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={createGameStyles.shuffleContainer}
                     onPress={() => setShuffleTargets(!shuffleTargets)}
                     activeOpacity={0.7}
@@ -92,8 +92,8 @@ const CreateGame = () => {
                         <View>
                             <Text style={styles.subTitle}>Shuffle Targets</Text>
                             <Text style={createGameStyles.description}>
-                                {shuffleTargets 
-                                    ? "Targets will be randomly reassigned each round" 
+                                {shuffleTargets
+                                    ? "Targets will be randomly reassigned each round"
                                     : "your Targets target will become your target "}
                             </Text>
                         </View>
@@ -108,10 +108,35 @@ const CreateGame = () => {
             </View>
 
             {/* Create Game Button */}
-            <TouchableOpacity 
+            <TouchableOpacity
                 style={[styles.loginBtn, createGameStyles.createButton]}
-                onPress={() => {
-                    // Handle game creation here
+                onPress={async () => {
+                    //TODO: pass additional game settings through request and set actual owner name and id
+                    const url = 'http://128.113.126.109/create_game';
+                    const requestData = {
+                        owner_name: 'placeholder_name',
+                        owner_id: 'placeholder_id'
+                    };
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(requestData),
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            Alert.alert('Game Created', `Game ID: ${result.game_id}`);
+                        } else {
+                            Alert.alert('Error Creating Game', result.error);
+                        }
+                    } catch (error) {
+                        console.error('Error creating game:', error);
+                        Alert.alert('Error', 'Failed to connect to the server.');
+                    }
                     // You can access all the values: roundLengthValue, killDistance, shuffleTargets
                 }}
             >

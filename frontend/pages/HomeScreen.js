@@ -39,15 +39,18 @@ const HomeScreen = () => {
             </View>
 
             <Text style={homepageStyles.targetText}>Target: ________</Text>
-
-            <View style={homepageStyles.buttonContainer}>
-                <View style={homepageStyles.button}>
-                    <Button title="Kill" onPress={handleKill} />
-                </View>
-                <View style={homepageStyles.button}>
-                    <Button title="Action" onPress={handleAction} />
-                </View>
+            
+            <View style={homepageStyles.killButton}>
+            <TouchableOpacity style={homepageStyles.button} onPress={handleKill}>
+                <Text style={homepageStyles.buttonText}>Kill</Text>
+            </TouchableOpacity>
             </View>
+            <View style={homepageStyles.actionButton}>
+            <TouchableOpacity style={homepageStyles.button} onPress={handleAction}>
+                <Text style={homepageStyles.buttonText}>Action</Text>
+            </TouchableOpacity>
+            </View>
+
         </View>
     );
 };

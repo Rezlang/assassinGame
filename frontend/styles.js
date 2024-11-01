@@ -93,7 +93,6 @@ export const styles = StyleSheet.create({
     top: 10,
     left: 10,
   },
-
   logoutBtnTxt: {
     color: 'white',
     fontSize: 16,
@@ -144,6 +143,31 @@ export const homepageStyles = StyleSheet.create({
   button: {
     marginVertical: 10,
   },
+  killButton: {
+    position: 'absolute',
+    width: '90%',
+    marginHorizontal: '5%',
+    bottom: 20,
+    backgroundColor: '#CC0000',
+    borderRadius: 5,
+    paddingVertical: 1,
+    alignItems: 'center',
+  },
+  actionButton: {
+    position: 'absolute',
+    width: '90%',
+    marginHorizontal: '5%',
+    bottom: 80,
+    backgroundColor: '#00CC00',
+    borderRadius: 5,
+    paddingVertical: 1,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export const createGameStyles = StyleSheet.create({
@@ -186,4 +210,21 @@ export const createGameStyles = StyleSheet.create({
     width: '90%',
     marginHorizontal: '5%',
   },
+});
+
+export const map = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+});
+
+export const joinGameStyles = StyleSheet.create({
+  Title: {
+    fontSize: 300,
+    color: "black"
+  }
 });

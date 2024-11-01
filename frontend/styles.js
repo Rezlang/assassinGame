@@ -142,6 +142,19 @@ export const homepageStyles = StyleSheet.create({
   button: {
     marginVertical: 10,
   },
+  killButton: {
+    position: 'absolute',
+    width: '90%',
+    marginHorizontal: '5%',
+    bottom: 20,
+    color: "red"
+  },
+  actionButton: {
+    position: 'absolute',
+    width: '90%',
+    marginHorizontal: '5%',
+    bottom: 80,
+    color: "green"
 });
 
 export const createGameStyles = StyleSheet.create({
@@ -185,3 +198,19 @@ export const createGameStyles = StyleSheet.create({
       marginHorizontal: '5%',
   },
 });
+
+export const map = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
+});
+export const joinGameStyles = StyleSheet.create({
+  Title:{
+    fontSize:300,
+    color:"black"
+  }
+})

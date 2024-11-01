@@ -26,11 +26,11 @@ const HomeScreen = () => {
             
             <Text style={homepageStyles.targetText}>Target: ________</Text>
             
-            <View style={homepageStyles.buttonContainer}>
+            <View style={homepageStyles.killButton}>
                 <View style={homepageStyles.button}>
                     <Button title="Kill" onPress={handleKill} />
                 </View>
-                <View style={homepageStyles.button}>
+                <View style={homepageStyles.actionButton}>
                     <Button title="Action" onPress={handleAction} />
                 </View>
             </View>

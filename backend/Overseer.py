@@ -3,7 +3,8 @@
 import random
 import threading
 import uuid
-import firebase  # Import the firebase module
+import firebase
+import util
 
 
 class Overseer:
@@ -15,6 +16,7 @@ class Overseer:
         self.alive_players = []
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
+        self.min_kill_dist_feet = self.data["game_settings"]["kill_distance"]
         self.targets = None
         self.current_round = 0
         self.join_game(owner_name, owner_id)
@@ -34,6 +36,7 @@ class Overseer:
             self.alive_players = self.data.get("alive_players", [])
             self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
             self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
+            self.min_kill_dist_feet = self.data["game_settings"]["kill_distance"]
         else:
             print("Game data not found in Firestore.")
 
@@ -93,9 +96,23 @@ class Overseer:
         timer.start()
         return timer
 
-    def kill(self, killer_name, killer_id):
+    def close_enough_to_kill(self, pos1, pos2):
+        is_zero = self.min_kill_dist_feet == 0
+        return is_zero or (util.haversine(pos1, pos2) < self.min_kill_dist_feet)
+
+    def perform_kill(self, target, killer_name):
+        self.alive_players.remove(target)
+        firebase.remove_alive_player(self.game_id, target)
+
+        print(f"{target['name']} was killed by {killer_name}")
+        return f"{target['name']} was killed by {killer_name}"
+
+    def get_target_pos(target_id):
+        # Add location service logic to retrieve latitude and longitude
+        return (0, 0)
+
+    def kill(self, killer_name, killer_id, killer_pos=None):
         if not self.targets:
-            # print("No targets assigned yet")
             return "No targets assigned yet"
 
         killer = next((player for player in self.alive_players if player["name"].lower(
@@ -109,14 +126,10 @@ class Overseer:
 
             target = next(
                 (player for player in self.alive_players if player["id"] == target_id), None)
+            target_pos = self.get_target_pos(target_id)
 
-            if target:
-
-                self.alive_players.remove(target)
-                firebase.remove_alive_player(self.game_id, target)
-
-                print(f"{target['name']} was killed by {killer_name}")
-                return f"{target['name']} was killed by {killer_name}"
+            if target and self.close_enough_to_kill(killer_pos, target_pos):
+                return self.perform_kill(target, killer_name)
             else:
                 # print(
                 #     f"Target {target_id} is already dead or not found among alive players.")

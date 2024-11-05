@@ -1,11 +1,51 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch } from 'react-native';
-import { styles, joinGameStyles} from '../styles.js';
+import { View, Text, TextInput, TouchableOpacity, Switch, AsyncStorage } from 'react-native';
+import { styles, joinGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
+import auth from '@react-native-firebase/auth';
 
 const JoinGame = () => {
-    const [GameCode, setGameCode] = useState('');
-    const handleJoinGame = () => {
+    const [userEmail, setUserEmail] = useState('');
+    const [userID, setUserID] = useState('');
+
+    useEffect(() => {
+        const user = auth().currentUser;
+        if (user) {
+            setUserEmail(user.email);
+            setUserID(user.uid)
+        }
+    }, []);
+
+    const handleJoinGame = async () => {
+        const url = 'http://128.113.126.109/join_game';
+        const gameID = await AsyncStorage.getItem('game_id');
+        const requestData = {
+            owner_name: userEmail,
+            owner_id: userID,
+            game_id: gameID
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                Alert.alert('Game Joined', `Game ID: ${result.game_id}`);
+            } else {
+                Alert.alert('Error Joining Game', result.error);
+            }
+        } catch (error) {
+            console.error('Error Joining game:', error);
+            Alert.alert('Error', 'Failed to connect to the server.');
+        }
+
         navigation.navigate('Home', { gameId: GameCode });
     };
 
@@ -13,6 +53,7 @@ const JoinGame = () => {
         // Navigate to the "CreateGame" screen
         navigation.navigate('CreateGame');
     };
+    
     return (
         <View>
             <Text style={styles.header}>Join Game</Text>
@@ -27,7 +68,7 @@ const JoinGame = () => {
                 placeholderTextColor="#666"
                 keyboardType="numeric"
             />
-               <Button
+            <Button
                 title="Join Game"
                 onPress={handleJoinGame}
             />

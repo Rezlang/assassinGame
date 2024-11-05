@@ -157,3 +157,12 @@ class Overseer:
                 self.alive_players.remove(player)
                 firebase.remove_alive_player(self.game_id, player)
         self.setup_round()
+
+    def get_target(self, killer_id, killer_name):
+        target_id = self.targets.get(killer_id)
+        if not target_id:
+            return f"No target assigned to {killer_name}"
+
+        target = next(
+            (player for player in self.alive_players if player["id"] == target_id), None)
+        return target["name"] + "|" + target["id"]

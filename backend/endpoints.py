@@ -49,6 +49,22 @@ def kill():
         return jsonify({"error": str(e)}), 404
 
 
+@app.route('/get_target', methods=['POST'])
+def kill():
+    data = request.json
+    game_id = data.get('game_id')
+    killer_name = data.get('killer_name')
+    killer_id = data.get('killer_id')
+    if not game_id or not killer_name or not killer_id:
+        return jsonify({"error": "game_id, killer_name, and killer_id are required"}), 400
+
+    try:
+        msg = game_api.get_target(game_id, killer_name, killer_id)
+        return jsonify({"message": msg}), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404
+
+
 @app.route('/start_game', methods=['POST'])
 def start_game():
     data = request.json

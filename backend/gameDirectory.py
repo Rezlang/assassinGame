@@ -25,3 +25,7 @@ class GameDirectory:
     def start_game(self, game_id, user_id):
         game = self.games[game_id]
         return game.game_start(user_id)
+
+    def get_target(self, game_id, killer_name, killer_id):
+        game = self.games[game_id]
+        return game.get_target(killer_name, killer_id)

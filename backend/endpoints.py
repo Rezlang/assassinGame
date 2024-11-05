@@ -50,7 +50,7 @@ def kill():
 
 
 @app.route('/get_target', methods=['POST'])
-def kill():
+def get_target():
     data = request.json
     game_id = data.get('game_id')
     killer_name = data.get('killer_name')

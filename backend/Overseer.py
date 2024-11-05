@@ -16,7 +16,7 @@ class Overseer:
         self.alive_players = []
         self.round_time_minutes = self.data["game_settings"]["round_time_minutes"]
         self.shuffle_targets = self.data["game_settings"]["shuffle_targets"]
-        self.min_kill_dist_feet = self.data["game_settings"]["kill_distance"]
+        self.min_kill_dist_feet = self.data["game_settings"]["kill_radius_feet"]
         self.targets = None
         self.current_round = 0
         self.join_game(owner_name, owner_id)

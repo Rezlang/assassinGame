@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, Button, Alert, TouchableOpacity } from 'react-native';
 import { homepageStyles } from '../styles.js'
-import auth from '@react-native-firebase/auth';
 
 const HomeScreen = () => {
     const [userEmail, setUserEmail] = useState('');

@@ -5,7 +5,10 @@ curl -X POST http://128.113.126.109:5000/create_game -H "Content-Type: applicati
 curl -X POST http://128.113.126.109:5000/join_game -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "user_name": "Bob", "user_id": "456"}'
 
 # Start a game
-curl -X POST http://128.113.126.109:5000/start_game -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "user_id": "123"}'
+curl -X POST http://128.113.126.109:5000/start_game -H "Content-Type: application/json" -d '{"game_id": "47a76b85-456e-4616-bff9-f3bb24a8a0c9", "user_id": "123"}'
 
 Kill
-curl -X POST http://128.113.126.109:5000/kill -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "killer_name": "Bob", "killer_id": "456"}'
+curl -X POST http://128.113.126.109:5000/kill -H "Content-Type: application/json" -d '{"game_id": "47a76b85-456e-4616-bff9-f3bb24a8a0c9", "killer_name": "Bob", "killer_id": "456"}'
+
+get_target
+curl -X POST http://128.113.126.109:5000/get_target -H "Content-Type: application/json" -d '{"game_id": "47a76b85-456e-4616-bff9-f3bb24a8a0c9", "killer_name": "Bob", "killer_id": "456"}'

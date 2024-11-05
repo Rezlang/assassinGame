@@ -93,7 +93,6 @@ export const styles = StyleSheet.create({
     top: 10,
     left: 10,
   },
-
   logoutBtnTxt: {
     color: 'white',
     fontSize: 16,
@@ -128,6 +127,8 @@ export const homepageStyles = StyleSheet.create({
     flexShrink: 1,
     textAlign: 'right',
     maxWidth: '50%',
+    alignSelf: 'flex-end',
+    marginRight: 30,
   },
   targetText: {
     fontSize: 32,
@@ -147,55 +148,67 @@ export const homepageStyles = StyleSheet.create({
     width: '90%',
     marginHorizontal: '5%',
     bottom: 20,
-    color: "red"
+    backgroundColor: '#CC0000',
+    borderRadius: 5,
+    paddingVertical: 1,
+    alignItems: 'center',
   },
   actionButton: {
     position: 'absolute',
     width: '90%',
     marginHorizontal: '5%',
     bottom: 80,
-    color: "green"
+    backgroundColor: '#00CC00',
+    borderRadius: 5,
+    paddingVertical: 1,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 });
 
 export const createGameStyles = StyleSheet.create({
   formContainer: {
-      width: '100%',
-      paddingHorizontal: 20,
-      marginTop: 60,
+    width: '100%',
+    paddingHorizontal: 20,
+    marginTop: 60,
   },
   pickerContainer: {
-      backgroundColor: '#383c44',
-      borderRadius: 5,
-      marginBottom: 20,
+    backgroundColor: '#383c44',
+    borderRadius: 5,
+    marginBottom: 20,
   },
   picker: {
-      height: 50,
-      width: '100%',
-      color: 'white',
+    height: 50,
+    width: '100%',
+    color: 'white',
   },
   shuffleContainer: {
-      marginTop: 15,
-      padding: 15,
-      backgroundColor: '#383c44',
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#484c54',
+    marginTop: 15,
+    padding: 15,
+    backgroundColor: '#383c44',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#484c54',
   },
   shuffleContent: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   description: {
-      fontSize: 14,
-      color: '#a0a0a0',
-      marginTop: 4,
+    fontSize: 14,
+    color: '#a0a0a0',
+    marginTop: 4,
   },
   createButton: {
-      position: 'absolute',
-      bottom: 30,
-      width: '90%',
-      marginHorizontal: '5%',
+    position: 'absolute',
+    bottom: 30,
+    width: '90%',
+    marginHorizontal: '5%',
   },
 });
 
@@ -208,9 +221,10 @@ export const map = StyleSheet.create({
     height: '100%',
   },
 });
+
 export const joinGameStyles = StyleSheet.create({
-  Title:{
-    fontSize:300,
-    color:"black"
+  Title: {
+    fontSize: 300,
+    color: "black"
   }
-})
+});

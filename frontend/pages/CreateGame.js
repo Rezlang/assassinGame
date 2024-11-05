@@ -83,46 +83,74 @@ const CreateGame = () => {
                   />
               )}
 
-              {/* Shuffle Targets Section */}
-              <TouchableOpacity 
-                  style={createGameStyles.shuffleContainer}
-                  onPress={() => setShuffleTargets(!shuffleTargets)}
-                  activeOpacity={0.7}
-              >
-                  <View style={createGameStyles.shuffleContent}>
-                      <View>
-                          <Text style={styles.subTitle}>Shuffle Targets</Text>
-                          <Text style={createGameStyles.description}>
-                              {shuffleTargets 
-                                  ? "Targets will be randomly reassigned each round" 
-                                  : "Your target's target will become your next target"}
-                          </Text>
-                      </View>
-                      <Switch
-                          value={shuffleTargets}
-                          onValueChange={setShuffleTargets}
-                          trackColor={{ false: '#767577', true: '#81b0ff' }}
-                          thumbColor={shuffleTargets ? '#2196F3' : '#f4f3f4'}
-                      />
-                  </View>
-              </TouchableOpacity>
-          </View>
+                {/* Shuffle Targets Section */}
+                <TouchableOpacity
+                    style={createGameStyles.shuffleContainer}
+                    onPress={() => setShuffleTargets(!shuffleTargets)}
+                    activeOpacity={0.7}
+                >
+                    <View style={createGameStyles.shuffleContent}>
+                        <View>
+                            <Text style={styles.subTitle}>Shuffle Targets</Text>
+                            <Text style={createGameStyles.description}>
+                                {shuffleTargets
+                                    ? "Targets will be randomly reassigned each round"
+                                    : "Your Targets target will become your target "}
+                            </Text>
+                        </View>
+                        <Switch
+                            value={shuffleTargets}
+                            onValueChange={setShuffleTargets}
+                            trackColor={{ false: '#767577', true: '#81b0ff' }}
+                            thumbColor={shuffleTargets ? '#2196F3' : '#f4f3f4'}
+                        />
+                    </View>
+                </TouchableOpacity>
+            </View>
 
-          {/* Create Game Button */}
-          <TouchableOpacity 
-              style={[styles.loginBtn, createGameStyles.createButton]}
-              onPress={() => {
-                  console.log({
-                      roundLengthMins: roundLengthValueMins,
-                      killDistanceFeet: killDistanceFeet,
-                      shuffleTargets: shuffleTargets
-                  });
-              }}
-          >
-              <Text style={styles.buttonText}>Create Game</Text>
-          </TouchableOpacity>
-      </ScrollView>
-  );
+            {/* Create Game Button */}
+            <TouchableOpacity
+                style={[styles.loginBtn, createGameStyles.createButton]}
+                onPress={async () => {
+                    //TODO: pass additional game settings through request and set actual owner name and id
+                    const url = 'http://128.113.126.109/create_game';
+                    const requestData = {
+                        owner_name: 'placeholder_name',
+                        owner_id: 'placeholder_id'
+                    };
+
+                    try {
+                        const response = await fetch(url, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(requestData),
+                        });
+
+                        const result = await response.json();
+                        if (response.ok) {
+                            Alert.alert('Game Created', `Game ID: ${result.game_id}`);
+                        } else {
+                            Alert.alert('Error Creating Game', result.error);
+                        }
+                    } catch (error) {
+                        console.error('Error creating game:', error);
+                        Alert.alert('Error', 'Failed to connect to the server.');
+                    }
+                    // You can access all the values: roundLengthValue, killDistance, shuffleTargets
+                    console.log({
+                        roundLengthMins: roundLengthValueMins,
+                        killDistanceFeet: killDistanceFeet,
+                        shuffleTargets: shuffleTargets
+                    });
+                
+                }}
+            >
+                <Text style={styles.buttonText}>Create Game</Text>
+            </TouchableOpacity>
+        </ScrollView>
+    );
 };
 
 export default CreateGame;

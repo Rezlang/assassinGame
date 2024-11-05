@@ -107,7 +107,7 @@ class Overseer:
         print(f"{target['name']} was killed by {killer_name}")
         return f"{target['name']} was killed by {killer_name}"
 
-    def get_target_pos(target_id):
+    def get_target_pos(self, target_id):
         # Add location service logic to retrieve latitude and longitude
         return (0, 0)
 
@@ -158,7 +158,7 @@ class Overseer:
                 firebase.remove_alive_player(self.game_id, player)
         self.setup_round()
 
-    def get_target(self, killer_id, killer_name):
+    def get_target(self, killer_name, killer_id):
         target_id = self.targets.get(killer_id)
         if not target_id:
             return f"No target assigned to {killer_name}"

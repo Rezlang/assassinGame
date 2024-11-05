@@ -1,5 +1,5 @@
 # Create a game
-curl -X POST http://128.113.126.109:5000/create_game -H "Content-Type: application/json" -d '{"owner_name": "Alice", "owner_id": "123"}'
+curl -X POST http://128.113.126.109:5000/create_game -H "Content-Type: application/json" -d '{"owner_name": "sara", "owner_id": "123"}'
 
 # Join a game
 curl -X POST http://128.113.126.109:5000/join_game -H "Content-Type: application/json" -d '{"game_id": "5d68759d-b5b1-4285-8a6b-58ec18b54e23", "user_name": "Bob", "user_id": "456"}'

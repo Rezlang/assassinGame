@@ -38,6 +38,7 @@ const JoinGame = () => {
 
             if (response.ok) {
                 Alert.alert('Game Joined', `Game ID: ${result.game_id}`);
+                navigation.navigate('Home', { gameId: GameCode });
             } else {
                 Alert.alert('Error Joining Game', result.error);
             }
@@ -46,14 +47,13 @@ const JoinGame = () => {
             Alert.alert('Error', 'Failed to connect to the server.');
         }
 
-        navigation.navigate('Home', { gameId: GameCode });
     };
 
     const handleCreateGame = () => {
         // Navigate to the "CreateGame" screen
         navigation.navigate('CreateGame');
     };
-    
+
     return (
         <View>
             <Text style={styles.header}>Join Game</Text>

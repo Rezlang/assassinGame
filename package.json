@@ -7,7 +7,10 @@
     "react-native-maps": "^1.18.2"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.26.0",
     "@tsconfig/react-native": "^3.0.5",
-    "@types/react-native": "^0.73.0"
+    "@types/react": "^18.3.12",
+    "@types/react-native": "^0.73.0",
+    "typescript": "^5.6.3"
   }
 }

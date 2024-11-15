@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect, AsyncStorage } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider } from './components/AuthProvider.js'
+import { AuthProvider, useAuth } from './components/AuthProvider.js';
 import InGameNavBar from './components/InGameNavbar.jsx';
 import HomeScreen from './pages/HomeScreen.js';
 import Profile from './pages/Profile.js';
@@ -13,7 +12,34 @@ import CreateGame from './pages/CreateGame.js';
 const Stack = createStackNavigator();
 
 function App() {
+    let user;
+    try {
+        const auth = useAuth();
+        user = auth?.user;
+    } catch (error) {
+        console.error('Error accessing AuthContext:', error);
+        user = null;
+    }
     const [currentRoute, setCurrentRoute] = useState('Landing');
+    const [initialRoute, setInitialRoute] = useState('Landing');
+
+    // Determine the initial route based on user auth status and cached game_id
+    useEffect(() => {
+        const determineInitialRoute = async () => {
+            if (user) {
+                try {
+                    const gameId = await AsyncStorage.getItem('game_id');
+                    setInitialRoute(gameId ? 'HomeScreen' : 'CreateGame');
+                } catch (error) {
+                    console.error('Error checking cached game ID:', error);
+                }
+            } else {
+                setInitialRoute('Landing');
+            }
+        };
+
+        determineInitialRoute();
+    }, [user]);
 
     return (
         <AuthProvider>
@@ -23,7 +49,7 @@ function App() {
                     setCurrentRoute(routeName);
                 }}>
                 <Stack.Navigator
-                    initialRouteName="Landing"
+                    initialRouteName={initialRoute}
                     screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Landing" component={Landing} />
                     <Stack.Screen name="SignUp" component={SignUp} />

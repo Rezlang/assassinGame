@@ -8,6 +8,7 @@ import Profile from './pages/Profile.js';
 import Landing from './pages/Landing.js';
 import SignUp from './pages/SignUp.js';
 import CreateGame from './pages/CreateGame.js';
+import JoinGame from './pages/JoinGame.js';
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,7 @@ function App() {
                     <Stack.Screen name="Home" component={HomeScreen} />
                     <Stack.Screen name="Profile" component={Profile} />
                     <Stack.Screen name="CreateGame" component={CreateGame} />
+                    <Stack.Screen name="JoinGame" component={JoinGame} />
                 </Stack.Navigator>
 
                 {currentRoute !== 'Landing' && currentRoute !== 'SignUp' && <InGameNavBar />}

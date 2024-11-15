@@ -19,10 +19,10 @@ const Landing = () => {
                     if (gameId) {
                         navigation.replace('Home');
                     } else {
-                        navigation.replace('CreateGame');
+                        navigation.replace('JoinGame');
                     }
                 } catch (error) {
-                    navigation.replace('CreateGame');
+                    navigation.replace('JoinGame');
                 }
             }
         };

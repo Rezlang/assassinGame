@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, AsyncStorage } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Switch, Button, AsyncStorage } from 'react-native';
 import { styles, joinGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 
 const JoinGame = () => {
+    const navigation = useNavigation();
     const [userEmail, setUserEmail] = useState('');
     const [userID, setUserID] = useState('');
+    const [gameCode, setGameCode] = useState('');
 
     useEffect(() => {
         const user = auth().currentUser;
@@ -18,11 +20,10 @@ const JoinGame = () => {
 
     const handleJoinGame = async () => {
         const url = 'http://128.113.126.109/join_game';
-        const gameID = await AsyncStorage.getItem('game_id');
         const requestData = {
             owner_name: userEmail,
             owner_id: userID,
-            game_id: gameID
+            game_id: gameCode
         };
 
         try {
@@ -38,7 +39,7 @@ const JoinGame = () => {
 
             if (response.ok) {
                 Alert.alert('Game Joined', `Game ID: ${result.game_id}`);
-                navigation.navigate('Home', { gameId: GameCode });
+                navigation.navigate('Home', { gameId: gameCode });
             } else {
                 Alert.alert('Error Joining Game', result.error);
             }
@@ -63,7 +64,7 @@ const JoinGame = () => {
                     const days = parseFloat(text) || 0;
                     setGameCode(text);
                 }}
-                value={GameCode}
+                value={gameCode}
                 placeholder="Enter your game code"
                 placeholderTextColor="#666"
                 keyboardType="numeric"
@@ -80,3 +81,5 @@ const JoinGame = () => {
         </View>
     );
 };
+
+export default JoinGame;

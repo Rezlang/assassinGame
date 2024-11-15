@@ -12,34 +12,7 @@ import CreateGame from './pages/CreateGame.js';
 const Stack = createStackNavigator();
 
 function App() {
-    let user;
-    try {
-        const auth = useAuth();
-        user = auth?.user;
-    } catch (error) {
-        console.error('Error accessing AuthContext:', error);
-        user = null;
-    }
     const [currentRoute, setCurrentRoute] = useState('Landing');
-    const [initialRoute, setInitialRoute] = useState('Landing');
-
-    // Determine the initial route based on user auth status and cached game_id
-    useEffect(() => {
-        const determineInitialRoute = async () => {
-            if (user) {
-                try {
-                    const gameId = await AsyncStorage.getItem('game_id');
-                    setInitialRoute(gameId ? 'HomeScreen' : 'CreateGame');
-                } catch (error) {
-                    console.error('Error checking cached game ID:', error);
-                }
-            } else {
-                setInitialRoute('Landing');
-            }
-        };
-
-        determineInitialRoute();
-    }, [user]);
 
     return (
         <AuthProvider>
@@ -49,7 +22,7 @@ function App() {
                     setCurrentRoute(routeName);
                 }}>
                 <Stack.Navigator
-                    initialRouteName={initialRoute}
+                    initialRouteName={currentRoute}
                     screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Landing" component={Landing} />
                     <Stack.Screen name="SignUp" component={SignUp} />

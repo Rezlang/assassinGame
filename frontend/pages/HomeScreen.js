@@ -1,14 +1,11 @@
-<<<<<<< HEAD
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Button, Alert, TouchableOpacity } from 'react-native';
-=======
-import React, { useState, useEffect } from 'react';
 import { View, Text, Button, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
->>>>>>> 51ffb61427d103ff5838bf4143c49d6b061a50fd
 import { homepageStyles } from '../styles.js'
 import auth from '@react-native-firebase/auth';
+import { useAuth } from '../components/AuthProvider.js'
 
 const HomeScreen = () => {
+    const { user, signOut } = useAuth();
     const [userEmail, setUserEmail] = useState('');
     const [userID, setUserID] = useState('');
     const [target, setTarget] = useState('');
@@ -112,8 +109,9 @@ const HomeScreen = () => {
     };
 
     const handleLogout = () => {
-        auth().signOut().then(() => {
+        signOut().then(() => {
             Alert.alert('Logged out');
+            
         }).catch((error) => {
             Alert.alert('Logout failed', error.message);
         });

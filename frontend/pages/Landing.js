@@ -1,21 +1,28 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
-import auth from '@react-native-firebase/auth';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { useAuth } from '../components/AuthProvider.js';
 
 const Landing = () => {
     const navigation = useNavigation();
+    const { user, signIn } = useAuth(); // Access user and signIn function from AuthProvider
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isValid, setValid] = useState(true);
-    const [error, setError] = useState('');
+
+    // Check if there's already a logged-in user
+    useEffect(() => {
+        if (user) {
+            // If a user is logged in, navigate to Home
+            navigation.navigate('Home');
+        }
+    }, [user, navigation]); // Depend on user and navigation to re-run if user changes
 
     const handleGoogleLoginClick = () => {
         navigation.navigate('Home');
     };
+
     const handleRegisterClick = () => {
         navigation.navigate('SignUp');
     };
@@ -27,12 +34,8 @@ const Landing = () => {
                 return;
             }
 
-            let response = await auth().signInWithEmailAndPassword(email, password);
-            if (response && response.user) {
-                navigation.navigate('Home');
-            } else {
-                console.error('Authentication failed.');
-            }
+            await signIn(email, password);
+            navigation.navigate('Home');
         } catch (e) {
             console.error('Authentication error:', e.message);
         }
@@ -71,7 +74,7 @@ const Landing = () => {
                         <Text style={styles.buttonText}>Login with Google</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.loginBtn, styles.loginBtnMargin]} onPress={() => __doSignIn(email, password)}>
-                    <Text style={styles.buttonText}>Login</Text>
+                        <Text style={styles.buttonText}>Login</Text>
                     </TouchableOpacity>
                 </View>
 

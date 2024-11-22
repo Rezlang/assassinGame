@@ -1,139 +1,122 @@
-import React, { useCallback, useState } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import React, { useEffect, useState } from 'react';
+import { View, TouchableOpacity, Dimensions, Text, StyleSheet } from 'react-native';
+import MapView, { Marker, Region } from 'react-native-maps';
+import * as Location from 'expo-location';
 
-// Add explicit type definitions since DOM types aren't available
-interface GeolocationCoordinates {
-  readonly latitude: number;
-  readonly longitude: number;
-  readonly altitude: number | null;
-  readonly accuracy: number;
-  readonly altitudeAccuracy: number | null;
-  readonly heading: number | null;
-  readonly speed: number | null;
+interface LocationType {
+    latitude: number;
+    longitude: number;
 }
 
-interface GeolocationPosition {
-  readonly coords: GeolocationCoordinates;
-  readonly timestamp: number;
-}
+const Map = ({ initialRegion = {
+    latitude: 40.7128,  // Default to NYC
+    longitude: -74.0060,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+} }) => {
+    const [userLocation, setUserLocation] = useState<LocationType | null>(null);
+    const [mapRef, setMapRef] = useState<MapView | null>(null);
 
-interface GeolocationPositionError {
-  readonly code: number;
-  readonly message: string;
-  readonly PERMISSION_DENIED: number;
-  readonly POSITION_UNAVAILABLE: number;
-  readonly TIMEOUT: number;
-}
+    useEffect(() => {
+        getUserLocation();
+    }, []);
 
-const containerStyle = {
-  width: '100%',
-  height: '400px'
-};
+    const getUserLocation = async () => {
+        try {
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                console.error('Permission to access location was denied');
+                return;
+            }
 
-const buttonStyle = {
-  position: 'absolute' as const,
-  bottom: '1rem',
-  right: '1rem',
-  padding: '0.5rem 1rem',
-  backgroundColor: 'white',
-  borderRadius: '9999px',
-  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-  cursor: 'pointer',
-  border: 'none',
-  transition: 'box-shadow 0.2s ease'
-};
-
-interface MapProps {
-  apiKey: string;
-  center?: google.maps.LatLngLiteral;
-  zoom?: number;
-}
-
-const Map: React.FC<MapProps> = ({
-  apiKey,
-  center = { lat: 40.7128, lng: -74.0060 }, // Default to NYC
-  zoom = 12
-}) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: apiKey
-  });
-
-  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral | null>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  const onLoad = useCallback((map: google.maps.Map) => {
-    setMap(map);
-    // Get user's location when map loads
-    if (typeof window !== 'undefined' && window.navigator && 'geolocation' in window.navigator) {
-      window.navigator.geolocation.getCurrentPosition(
-        (position: GeolocationPosition) => {
-          const location = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-          setUserLocation(location);
-          map.panTo(location);
-        },
-        (error: GeolocationPositionError) => {
-          console.error("Error getting location:", error);
+            const location = await Location.getCurrentPositionAsync({});
+            const userLoc: LocationType = {
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            };
+            setUserLocation(userLoc);
+            
+            if (mapRef) {
+                const region: Region = {
+                    ...userLoc,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                };
+                mapRef.animateToRegion(region);
+            }
+        } catch (error) {
+            console.error('Error getting location:', error);
         }
-      );
-    }
-  }, []);
+    };
 
-  const onUnmount = useCallback(() => {
-    setMap(null);
-  }, []);
+    const handleRecenter = () => {
+        if (userLocation && mapRef) {
+            const region: Region = {
+                ...userLocation,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+            };
+            mapRef.animateToRegion(region);
+        }
+    };
 
-  const handleRecenter = () => {
-    if (userLocation && map) {
-      map.panTo(userLocation);
-    }
-  };
-
-  if (!isLoaded) return <div>Loading...</div>;
-
-  return (
-    <div style={{ position: 'relative' }}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={zoom}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-      >
-        {userLocation && (
-          <Marker
-            position={userLocation}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 7,
-              fillColor: "#4285F4",
-              fillOpacity: 1,
-              strokeColor: "#FFFFFF",
-              strokeWeight: 2,
-            }}
-          />
-        )}
-      </GoogleMap>
-      
-      {userLocation && (
-        <button 
-          onClick={handleRecenter}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          style={{
-            ...buttonStyle,
-            boxShadow: isHovered ? '0 4px 6px rgba(0,0,0,0.15)' : '0 2px 4px rgba(0,0,0,0.1)'
-          }}
-        >
-          Recenter
-        </button>
-      )}
-    </div>
-  );
+    return (
+        <View style={styles.container}>
+            <MapView
+                ref={(ref) => setMapRef(ref)}
+                style={styles.map}
+                initialRegion={initialRegion}
+            >
+                {userLocation && (
+                    <Marker
+                        coordinate={userLocation}
+                        title="You are here"
+                        pinColor="#4285F4"
+                    />
+                )}
+            </MapView>
+            
+            {userLocation && (
+                <TouchableOpacity
+                    onPress={handleRecenter}
+                    style={styles.recenterButton}
+                >
+                    <Text style={styles.recenterText}>Recenter</Text>
+                </TouchableOpacity>
+            )}
+        </View>
+    );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        height: 400,
+        width: Dimensions.get('window').width,
+        position: 'relative'
+    },
+    map: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
+    },
+    recenterButton: {
+        position: 'absolute',
+        bottom: 16,
+        right: 16,
+        backgroundColor: 'white',
+        padding: 12,
+        borderRadius: 30,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+    },
+    recenterText: {
+        color: '#4285F4'
+    }
+});
 
 export default Map;

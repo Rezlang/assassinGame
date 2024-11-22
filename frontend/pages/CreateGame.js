@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, AsyncStorage } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, AsyncStorage } from 'react-native';
 import { styles, createGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
@@ -24,7 +24,7 @@ const CreateGame = () => {
     }, []);
 
     return (
-        <ScrollView style={styles.homePageScrn}>
+        <View style={styles.homePageScrn}>
             <Text style={styles.header}>Create Game</Text>
 
             <View style={createGameStyles.formContainer}>
@@ -37,12 +37,12 @@ const CreateGame = () => {
                         dropdownIconColor="white"
                         onValueChange={(itemValue) => setRoundLengthValue(itemValue)}
                     >
-                        <Picker.Item label="30 mins" value="30" color="white" />
-                        <Picker.Item label="1 hour" value="60" color="white" />
-                        <Picker.Item label="3 hours" value="180" color="white" />
-                        <Picker.Item label="6 hours" value="360" color="white" />
-                        <Picker.Item label="12 hours" value="720" color="white" />
-                        <Picker.Item label="Other" value="other" color="white" />
+                        <Picker.Item label="30 mins" value="30" color="black" />
+                        <Picker.Item label="1 hour" value="60" color="black" />
+                        <Picker.Item label="3 hours" value="180" color="black" />
+                        <Picker.Item label="6 hours" value="360" color="black" />
+                        <Picker.Item label="12 hours" value="720" color="black" />
+                        <Picker.Item label="Other" value="other" color="black" />
                     </Picker>
                 </View>
 
@@ -71,12 +71,12 @@ const CreateGame = () => {
                         dropdownIconColor="white"
                         onValueChange={(itemValue) => setKillDistance(itemValue)}
                     >
-                        <Picker.Item label="5 feet" value="5" color="white" />
-                        <Picker.Item label="10 feet" value="10" color="white" />
-                        <Picker.Item label="25 feet" value="25" color="white" />
-                        <Picker.Item label="50 feet" value="50" color="white" />
-                        <Picker.Item label="100 feet" value="100" color="white" />
-                        <Picker.Item label="Other" value="other" color="white" />
+                        <Picker.Item label="5 feet" value="5" color="black" />
+                        <Picker.Item label="10 feet" value="10" color="black" />
+                        <Picker.Item label="25 feet" value="25" color="black" />
+                        <Picker.Item label="50 feet" value="50" color="black" />
+                        <Picker.Item label="100 feet" value="100" color="black" />
+                        <Picker.Item label="Other" value="other" color="black" />
                     </Picker>
                 </View>
 
@@ -169,7 +169,7 @@ const CreateGame = () => {
             >
                 <Text style={styles.buttonText}>Create Game</Text>
             </TouchableOpacity>
-        </ScrollView>
+        </View>
     );
 };
 

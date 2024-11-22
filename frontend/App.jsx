@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import { View, Text } from 'react-native';
+import React, { useState, useEffect, AsyncStorage } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider } from './components/AuthProvider.js'
+import { AuthProvider, useAuth } from './components/AuthProvider.js';
 import InGameNavBar from './components/InGameNavbar.jsx';
 import HomeScreen from './pages/HomeScreen.js';
 import Profile from './pages/Profile.js';
 import Landing from './pages/Landing.js';
 import SignUp from './pages/SignUp.js';
 import CreateGame from './pages/CreateGame.js';
+import JoinGame from './pages/JoinGame.js';
 
 const Stack = createStackNavigator();
 
@@ -23,13 +23,14 @@ function App() {
                     setCurrentRoute(routeName);
                 }}>
                 <Stack.Navigator
-                    initialRouteName="Landing"
+                    initialRouteName={currentRoute}
                     screenOptions={{ headerShown: false }}>
                     <Stack.Screen name="Landing" component={Landing} />
                     <Stack.Screen name="SignUp" component={SignUp} />
                     <Stack.Screen name="Home" component={HomeScreen} />
                     <Stack.Screen name="Profile" component={Profile} />
                     <Stack.Screen name="CreateGame" component={CreateGame} />
+                    <Stack.Screen name="JoinGame" component={JoinGame} />
                 </Stack.Navigator>
 
                 {currentRoute !== 'Landing' && currentRoute !== 'SignUp' && <InGameNavBar />}

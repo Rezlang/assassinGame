@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, AsyncStorage } from 'react';
 import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
@@ -11,13 +11,23 @@ const Landing = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    // Check if there's already a logged-in user
     useEffect(() => {
-        if (user) {
-            // If a user is logged in, navigate to Home
-            navigation.navigate('Home');
-        }
-    }, [user, navigation]); // Depend on user and navigation to re-run if user changes
+        const determinePage = async () => {
+            if (user) {
+                try {
+                    const gameId = await AsyncStorage.getItem('game_id');
+                    if (gameId) {
+                        navigation.replace('Home');
+                    } else {
+                        navigation.replace('JoinGame');
+                    }
+                } catch (error) {
+                    navigation.replace('JoinGame');
+                }
+            }
+        };
+        determinePage();
+    }, [user, navigation]);
 
     const handleGoogleLoginClick = () => {
         navigation.navigate('Home');

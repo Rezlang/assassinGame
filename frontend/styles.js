@@ -98,6 +98,14 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  backButton: {
+    backgroundColor: "#383c44",
+    position: "absolute",
+    padding: 10,
+    borderRadius: 5,
+    top: 10,
+    left: 10,
+  },
 });
 
 

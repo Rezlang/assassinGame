@@ -231,8 +231,48 @@ export const map = StyleSheet.create({
 });
 
 export const joinGameStyles = StyleSheet.create({
-  Title: {
+  container: {
+    flex: 1,
+    backgroundColor: '#282c34', // Keep the background consistent with your theme
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+  },
+  header: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 30,
+    textAlign: 'center',
+  },
+  input: {
+    backgroundColor: 'white',
+    borderRadius: 5,
+    padding: 10,
+    width: '80%',
+    marginBottom: 20,
+    fontSize: 16,
+  },
+  button: {
+    backgroundColor: '#2196F3',
+    borderRadius: 5,
+    padding: 15,
+    width: '80%',
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  orText: {
+    color: 'white',
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  title: {
     fontSize: 300,
     color: "black"
-  }
+  },
 });

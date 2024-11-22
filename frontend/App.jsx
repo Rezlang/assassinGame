@@ -14,6 +14,7 @@ const Stack = createStackNavigator();
 
 function App() {
     const [currentRoute, setCurrentRoute] = useState('Landing');
+    const excludedRoutes = ['Landing', 'SignUp', 'JoinGame', 'CreateGame'];
 
     return (
         <AuthProvider>
@@ -33,7 +34,7 @@ function App() {
                     <Stack.Screen name="JoinGame" component={JoinGame} />
                 </Stack.Navigator>
 
-                {currentRoute !== 'Landing' && currentRoute !== 'SignUp' && <InGameNavBar />}
+                {!excludedRoutes.includes(currentRoute) && <InGameNavBar />}
             </NavigationContainer>
         </AuthProvider>
     );

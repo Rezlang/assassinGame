@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, Button, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { styles, joinGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
@@ -47,7 +47,6 @@ const JoinGame = () => {
             console.error('Error Joining game:', error);
             Alert.alert('Error', 'Failed to connect to the server.');
         }
-
     };
 
     const handleCreateGame = () => {
@@ -56,28 +55,23 @@ const JoinGame = () => {
     };
 
     return (
-        <View>
-            <Text style={styles.header}>Join Game</Text>
+        <View style={joinGameStyles.container}>
+            <Text style={joinGameStyles.header}>Join Game</Text>
             <TextInput
-                style={styles.input}
-                onChangeText={(text) => {
-                    const days = parseFloat(text) || 0;
-                    setGameCode(text);
-                }}
+                style={joinGameStyles.input}
+                onChangeText={setGameCode}
                 value={gameCode}
                 placeholder="Enter your game code"
                 placeholderTextColor="#666"
                 keyboardType="numeric"
             />
-            <Button
-                title="Join Game"
-                onPress={handleJoinGame}
-            />
-            <Text style={styles.header}>or</Text>
-            <Button
-                title="Create Game"
-                onPress={handleCreateGame}
-            />
+            <TouchableOpacity style={joinGameStyles.button} onPress={handleJoinGame}>
+                <Text style={joinGameStyles.buttonText}>Join Game</Text>
+            </TouchableOpacity>
+            <Text style={joinGameStyles.orText}>or</Text>
+            <TouchableOpacity style={joinGameStyles.button} onPress={handleCreateGame}>
+                <Text style={joinGameStyles.buttonText}>Create Game</Text>
+            </TouchableOpacity>
         </View>
     );
 };

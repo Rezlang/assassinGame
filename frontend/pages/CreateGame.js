@@ -25,6 +25,14 @@ const CreateGame = () => {
 
     return (
         <View style={styles.homePageScrn}>
+            <TouchableOpacity
+                style={styles.backButton}
+                onPress={() => navigation.navigate('JoinGame')}
+                activeOpacity={0.7}
+            >
+                <Text style={styles.buttonText}>Back</Text>
+            </TouchableOpacity>
+
             <Text style={styles.header}>Create Game</Text>
 
             <View style={createGameStyles.formContainer}>
@@ -140,7 +148,7 @@ const CreateGame = () => {
                         });
 
                         const result = await response.json();
-                        
+
                         if (response.ok) {
                             Alert.alert('Game Created', `Game ID: ${result.game_id}`);
                             try {

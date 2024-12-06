@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '../components/AuthProvider.js'
 import auth from '@react-native-firebase/auth';
 
@@ -7,7 +7,6 @@ const Profile = () => {
     const { user, signOut } = useAuth();
     const [userEmail, setUserEmail] = useState('');
     const [userID, setUserID] = useState('');
-    const [target, setTarget] = useState('');
     const [gameID, setGameID] = useState('');
 
     useEffect(async () => {
@@ -22,14 +21,6 @@ const Profile = () => {
         };
 
         fetchGameId();
-
-        const cachedTarget = await getCachedTarget();
-        if (!cachedTarget) {
-            await getTarget(); // Only call the backend if no cached target is found
-        } else {
-            setTarget(cachedTarget);
-            Alert.alert('Cached Target Loaded', `Target: ${cachedTarget}`);
-        }
     }, []);
 
     const handleLogout = () => {
@@ -42,37 +33,63 @@ const Profile = () => {
     };
 
     return (
-        <View>
-            <Text>Welcome to Profile</Text>
-            <Text>This is the temporary profile page.</Text>
-            <View style={homepageStyles.header}>
-                <TouchableOpacity onPress={handleLogout}>
-                    <Text style={homepageStyles.logoutText}>Logout</Text>
-                </TouchableOpacity>
-                <Text style={homepageStyles.userText}>User: {userEmail || 'Placeholder'}</Text>
-                <Text>Current Game: {gameID || 'No active game'} </Text>
-            </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>Welcome to Profile</Text>
+          <Text style={styles.subTitle}>This page is under development.</Text>
+          <View style={styles.userInfoContainer}>
+            <Text style={styles.infoText}>User: {userEmail || 'Placeholder'}</Text>
+            <Text style={styles.infoText}>Current Game: {gameID || 'No active game'}</Text>
+          </View>
+          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+            <Text style={styles.logoutBtnTxt}>Logout</Text>
+          </TouchableOpacity>
         </View>
-    );
-};
-
-const styles = StyleSheet.create({
-    container: {
+      );
+    };
+    
+    const styles = StyleSheet.create({
+      container: {
         flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#282c34',
         alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-    },
-    title: {
+        paddingTop: 50,
+      },
+      title: {
+        color: 'white',
         fontSize: 24,
+        marginBottom: 20,
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 10,
-    },
-    subtitle: {
+      },
+      subTitle: {
+        color: 'white',
         fontSize: 16,
-        color: '#666',
-    },
-});
+        marginBottom: 30,
+        textAlign: 'center',
+      },
+      userInfoContainer: {
+        alignItems: 'flex-start',
+        width: '80%',
+        marginBottom: 30,
+      },
+      infoText: {
+        color: 'aliceblue',
+        fontSize: 18,
+        marginBottom: 10,
+      },
+      logoutBtn: {
+        backgroundColor: 'red',
+        padding: 10,
+        borderRadius: 5,
+        position: 'absolute',
+        bottom: 20,
+        width: '80%',
+        alignItems: 'center',
+      },
+      logoutBtnTxt: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+      },
+    });
 
 export default Profile;

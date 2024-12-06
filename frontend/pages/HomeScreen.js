@@ -19,7 +19,7 @@ const HomeScreen = () => {
         }
         const fetchGameId = async () => {
             const storedGameId = await AsyncStorage.getItem('game_id');
-            setGameId(storedGameId);
+            setGameID(storedGameId);
         };
 
         fetchGameId();

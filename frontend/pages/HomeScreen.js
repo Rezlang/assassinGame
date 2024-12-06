@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, Button, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, Alert, TouchableOpacity, AsyncStorage } from 'react-native';
 import { homepageStyles } from '../styles.js'
 import auth from '@react-native-firebase/auth';
 import { useAuth } from '../components/AuthProvider.js'
@@ -85,7 +85,7 @@ const HomeScreen = () => {
 
         try {
             const response = await fetch(url, {
-                method:'POST',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -94,7 +94,7 @@ const HomeScreen = () => {
 
             const result = await response.json();
 
-            if(response.ok) {
+            if (response.ok) {
                 Alert.alert("Target Killed");
             } else {
                 Alert.alert("Error killing target");
@@ -111,7 +111,7 @@ const HomeScreen = () => {
     const handleLogout = () => {
         signOut().then(() => {
             Alert.alert('Logged out');
-            
+
         }).catch((error) => {
             Alert.alert('Logout failed', error.message);
         });

@@ -35,7 +35,7 @@ const Map = ({ initialRegion = {
                 longitude: location.coords.longitude,
             };
             setUserLocation(userLoc);
-            
+
             if (mapRef) {
                 const region: Region = {
                     ...userLoc,
@@ -75,7 +75,7 @@ const Map = ({ initialRegion = {
                     />
                 )}
             </MapView>
-            
+
             {userLocation && (
                 <TouchableOpacity
                     onPress={handleRecenter}

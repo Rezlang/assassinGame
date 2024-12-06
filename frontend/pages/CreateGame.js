@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Switch, ScrollView, AsyncStorage } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Switch, AsyncStorage } from 'react-native';
 import { styles, createGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';

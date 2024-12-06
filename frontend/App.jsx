@@ -1,7 +1,7 @@
-import React, { useState, useEffect, AsyncStorage } from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { AuthProvider, useAuth } from './components/AuthProvider.js';
+import { AuthProvider } from './components/AuthProvider.js';
 import InGameNavBar from './components/InGameNavbar.jsx';
 import HomeScreen from './pages/HomeScreen.js';
 import Profile from './pages/Profile.js';

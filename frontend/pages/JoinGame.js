@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { styles, joinGameStyles } from '../styles.js';
+import { joinGameStyles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 

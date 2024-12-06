@@ -3,7 +3,6 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { styles } from '../styles.js';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../components/AuthProvider.js';
-import Map from './components/Map';
 
 const Landing = () => {
     const navigation = useNavigation();
